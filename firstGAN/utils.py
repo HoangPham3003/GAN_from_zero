@@ -1,3 +1,4 @@
+import pathlib
 import matplotlib.pyplot as plt
 
 from torchvision.utils import make_grid
@@ -14,10 +15,10 @@ def show_tensor_images(image_tensor, num_images=25, size=(1, 28, 28), current_st
     state = "fake"
     if real:
         state = "real"
-    plt.xticks('')
-    plt.yticks('')
+    plt.axis('off')
     fig_name = "step_{}_{}".format(current_step, state)
     plt.title(fig_name)
-    plt.savefig(f"./firstGAN/runs/{fig_name}.jpg")
+    current_path = pathlib.Path(__file__).parent.resolve()
+    plt.savefig(f"{current_path}/runs/{fig_name}.jpg")
     plt.show()
 

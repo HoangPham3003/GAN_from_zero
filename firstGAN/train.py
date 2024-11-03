@@ -89,8 +89,8 @@ def run_firstGAN():
                 print(f"Step {current_step}: Generator loss: {mean_generator_loss}, discriminator loss: {mean_discriminator_loss}")
                 fake_noise = get_noise(current_batch_size, z_dim, device=device)
                 fake = gen(fake_noise)
-                show_tensor_images(image_tensor=fake, current_step=current_step, real=True)
-                show_tensor_images(image_tensor=real, current_step=current_step, real=False)
+                show_tensor_images(image_tensor=fake, current_step=current_step, real=False)
+                show_tensor_images(image_tensor=real, current_step=current_step, real=True)
                 mean_generator_loss = 0
                 mean_discriminator_loss = 0
             current_step += 1
