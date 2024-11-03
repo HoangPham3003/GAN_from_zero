@@ -7,7 +7,7 @@ def get_dataloader(batch_size, shuffle=True):
     dataloader = DataLoader(
         dataset=MNIST(root='./data',
               train=True,
-              download=False,
+              download=True,
               transform=transforms.ToTensor()),
         batch_size=batch_size,
         shuffle=shuffle

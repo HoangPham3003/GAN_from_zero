@@ -53,14 +53,14 @@ class Generator(nn.Module):
     def __init__(self, z_dim=10, im_dim=784, hidden_dim=128):
         super(Generator, self).__init__()
         
-        self.gen = nn.Sequential([
-            ('gen_block_1', get_generator_block(input_dim=z_dim, output_dim=hidden_dim)),
-            ('gen_block_2', get_generator_block(input_dim=hidden_dim, output_dim=hidden_dim*2)),
-            ('gen_block_3', get_generator_block(input_dim=hidden_dim*2, output_dim=hidden_dim*4)),
-            ('gen_block_4', get_generator_block(input_dim=hidden_dim*4, output_dim=hidden_dim*8)),
-            ('gen_block_5', nn.Linear(in_features=hidden_dim*8, out_features=im_dim)),
+        self.gen = nn.Sequential(
+            get_generator_block(input_dim=z_dim, output_dim=hidden_dim),
+            get_generator_block(input_dim=hidden_dim, output_dim=hidden_dim*2),
+            get_generator_block(input_dim=hidden_dim*2, output_dim=hidden_dim*4),
+            get_generator_block(input_dim=hidden_dim*4, output_dim=hidden_dim*8),
+            nn.Linear(in_features=hidden_dim*8, out_features=im_dim),
             nn.Sigmoid()
-        ])
+        )
     
     def forward(self, noise):
         '''
@@ -105,14 +105,14 @@ class Discriminator(nn.Module):
     def __init__(self, im_dim=784, hidden_dim=128):
         super(Discriminator, self).__init__()
         
-        self.disc = nn.Sequential([
-            ('disc_block_1', get_discriminator_block(input_dim=im_dim, output_dim=hidden_dim*4)),
-            ('disc_block_1', get_discriminator_block(input_dim=hidden_dim*4, output_dim=hidden_dim*2)),
-            ('disc_block_1', get_discriminator_block(input_dim=hidden_dim*2, output_dim=hidden_dim)),
+        self.disc = nn.Sequential(
+            get_discriminator_block(input_dim=im_dim, output_dim=hidden_dim*4),
+            get_discriminator_block(input_dim=hidden_dim*4, output_dim=hidden_dim*2),
+            get_discriminator_block(input_dim=hidden_dim*2, output_dim=hidden_dim),
             nn.Linear(in_features=hidden_dim, out_features=1) # classify fake or real
-        ])
+        )
         
-    def foward(self, generated_image):
+    def forward(self, generated_image):
         '''
         Function for completing a forward pass of the discriminator: Given an image tensor, 
         returns a 1-dimension tensor representing fake/real.

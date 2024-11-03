@@ -1,10 +1,13 @@
 from tqdm.auto import tqdm
 
 import torch
+import torch.nn as nn
 
-from model import Generator, Discriminator
-from dataset import get_dataloader
-from losses import get_disc_loss, get_gen_loss
+from .model import Generator, Discriminator, get_noise
+from .dataset import get_dataloader
+from .losses import get_disc_loss, get_gen_loss
+from .utils import show_tensor_images
+
 
 def run_firstGAN():
     
@@ -25,7 +28,7 @@ def run_firstGAN():
     gen = Generator(z_dim=z_dim).to(device)
     gen_optimizer = torch.optim.Adam(gen.parameters(), lr=lr)
     disc = Discriminator().to(device)
-    disc_opitmizer = torch.optim.Adam(disc.parameters(), lr=lr)
+    disc_optimizer = torch.optim.Adam(disc.parameters(), lr=lr)
     
     current_step = 0
     mean_generator_loss = 0.
@@ -35,6 +38,7 @@ def run_firstGAN():
     error = False
     
     for epoch in range(n_epochs):
+        print(f"\n ==== Epoch {epoch+1} ===== \n")
         
         # Dataloader returns the batches
         for real, _ in tqdm(dataloader):
@@ -45,7 +49,7 @@ def run_firstGAN():
             
             ### Update discriminator ###
             # Zero out the gradients before backpropagation
-            disc_opitmizer.zero_grad()
+            disc_optimizer.zero_grad()
             
             # Calculate discriminator loss
             disc_loss = get_disc_loss(gen, disc, criterion, real, current_batch_size, z_dim, device)
@@ -64,7 +68,7 @@ def run_firstGAN():
             gen_optimizer.zero_grad()
             gen_loss = get_gen_loss(gen, disc, criterion, current_batch_size, z_dim, device)
             gen_loss.backward(retain_graph=True)
-            gen_loss.step()
+            gen_optimizer.step()
             
             if test_generator:
                 try:
@@ -83,10 +87,10 @@ def run_firstGAN():
             ### Visualization code ###
             if current_step % display_step == 0 and current_step > 0:
                 print(f"Step {current_step}: Generator loss: {mean_generator_loss}, discriminator loss: {mean_discriminator_loss}")
-                fake_noise = get_noise(cur_batch_size, z_dim, device=device)
+                fake_noise = get_noise(current_batch_size, z_dim, device=device)
                 fake = gen(fake_noise)
-                show_tensor_images(fake)
-                show_tensor_images(real)
+                show_tensor_images(image_tensor=fake, current_step=current_step, real=True)
+                show_tensor_images(image_tensor=real, current_step=current_step, real=False)
                 mean_generator_loss = 0
                 mean_discriminator_loss = 0
             current_step += 1
