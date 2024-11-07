@@ -1,6 +1,7 @@
 import pathlib
 import matplotlib.pyplot as plt
 
+import torch
 import torch.nn as nn
 from torchvision.utils import make_grid
 

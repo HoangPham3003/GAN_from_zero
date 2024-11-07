@@ -40,12 +40,12 @@ class Generator(nn.Module):
         self.gen = nn.Sequential(
             self.make_gen_block(input_channels=z_dim, 
                                 output_channels=hidden_dim*4),
-            self.make_gen_block(input_channels=hidden_dim*4, 
+            self.make_gen_block(input_channels=hidden_dim*4,
                                 output_channels=hidden_dim*2, 
                                 kernel_size=4, 
-                                stride=1)
+                                stride=1),
             self.make_gen_block(input_channels=hidden_dim*2,
-                                output_channels=hidden_dim)
+                                output_channels=hidden_dim),
             self.make_gen_block(input_channels=hidden_dim,
                                 output_channels=im_chan,
                                 kernel_size=4,
@@ -80,7 +80,7 @@ class Generator(nn.Module):
                 nn.ConvTranspose2d(in_channels=input_channels,
                                    out_channels=output_channels,
                                    kernel_size=kernel_size,
-                                   stride=stride)
+                                   stride=stride),
                 nn.Tanh()
             )
             
@@ -164,4 +164,4 @@ class Discriminator(nn.Module):
             image: a flattened image tensor with dimension (im_dim)
         '''
         disc_pred = self.disc(image)
-        return disc_pred.view(len(disc_block), -1)
+        return disc_pred.view(len(disc_pred), -1)

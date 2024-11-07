@@ -64,10 +64,10 @@ def run_DCGAN():
             disc_opt.step()
 
             ## Update generator ##
-            gen_optimizer.zero_grad()
+            gen_opt.zero_grad()
             gen_loss = get_gen_loss(gen, disc, criterion, current_batch_size, z_dim, device)
             gen_loss.backward(retain_graph=True)
-            gen_optimizer.step()
+            gen_opt.step()
 
             # Keep track of the average generator loss
             mean_generator_loss += gen_loss.item() / display_step
@@ -75,10 +75,10 @@ def run_DCGAN():
             ## Visualization code ##
             if cur_step % display_step == 0 and cur_step > 0:
                 print(f"Epoch {epoch}, step {cur_step}: Generator loss: {mean_generator_loss}, discriminator loss: {mean_discriminator_loss}")
-                show_tensor_images(fake, current_step=current_step, real=False)
-                show_tensor_images(real, current_step=current_step, real=True)
+                show_tensor_images(fake, current_step=cur_step, real=False)
+                show_tensor_images(real, current_step=cur_step, real=True)
                 mean_generator_loss = 0
                 mean_discriminator_loss = 0
-            current_step += 1
+            cur_step += 1
     
     
