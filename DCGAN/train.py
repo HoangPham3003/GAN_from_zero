@@ -17,7 +17,7 @@ def run_DCGAN():
     z_dim = 64
     display_step = 500
     batch_size = 128
-    lr = 0.00001
+    lr = 0.0002
     beta_1 = 0.5 
     beta_2 = 0.999
     shuffle = True
@@ -75,6 +75,8 @@ def run_DCGAN():
             ## Visualization code ##
             if cur_step % display_step == 0 and cur_step > 0:
                 print(f"Epoch {epoch}, step {cur_step}: Generator loss: {mean_generator_loss}, discriminator loss: {mean_discriminator_loss}")
+                fake_noise = get_noise(current_batch_size, z_dim, device=device)
+                fake = gen(fake_noise)
                 show_tensor_images(fake, current_step=cur_step, real=False)
                 show_tensor_images(real, current_step=cur_step, real=True)
                 mean_generator_loss = 0
